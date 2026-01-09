@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="./icons/diamond.png">
+    <title>Zer-iş Gold</title>
+
+    <script>
+        const theme = localStorage.getItem("theme")
+        if (theme === "dark") {
+            document.documentElement.classList.add("dark")
+        }
+    </script>
+
+    <!-- Tailwind CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Vue CDN -->
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class'
+        }
+    </script>
+
+    <link rel="stylesheet" href="css/main.css">
+</head>
+
+<body class="bg-gray-100 text-gray-800 overflow-x-hidden">
+
+    <!-- VUE APP -->
+    <div id="app" class="bg-gray-100 dark:bg-gray-900 min-h-screen transition-colors">
+
+        <!-- NAVBAR -->
+        <nav class="relative bg-white dark:bg-gray-900 shadow-md transition-colors">
+            <div class="max-w-7xl mx-auto flex items-center justify-between px-6 py-4
+              text-gray-800 dark:text-gray-100">
+
+                <!-- LEFT -->
+                <button @click="toggleDark"
+                    class="p-2 rounded-md bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 transition text-lg">
+                    {{ isDark ? '☀️' : '🌙' }}
+                </button>
+
+                <div class="flex items-center gap-2 select-none cursor-pointer">
+                    <img src="./icons/diamond.png" alt="Zer-iş Gold"
+                        class="w-7 h-7 object-contain transition-transform duration-300 hover:scale-110" />
+                    <span class="text-lg font-semibold tracking-wide">
+                        Zer-iş Gold
+                    </span>
+                </div>
+
+                <!-- CENTER -->
+                <ul class="hidden md:flex items-center gap-6 font-medium">
+                    <li v-for="link in navLinks" :key="link" @click="handleNav(link)"
+                        class="cursor-pointer transition-all hover:text-yellow-600 hover:scale-110">
+                        {{ link }}
+                    </li>
+
+                    <li class="relative group cursor-pointer">
+                        <span>İletişim</span>
+
+                        <!-- DROPDOWN -->
+                        <ul
+                            class="absolute left-0 top-full w-48 bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-100 shadow-lg rounded-md opacity-0 group-hover:opacity-100 transition">
+                            <!-- CONTACT INFO -->
+                            <li @click="scrollTo('contact-info')"
+                                class="px-4 py-2 sub-link flex justify-between cursor-pointer">
+                                İletişim Bilgilerini Gör
+                            </li>
+
+                            <!-- CONTACT FORM -->
+                            <li @click="scrollTo('contact-form')"
+                                class="px-4 py-2 sub-link flex justify-between cursor-pointer">
+                                Hızlı Mail At
+                            </li>
+                        </ul>
+                    </li>
+
+
+                    <!-- FILTER -->
+                    <li class="relative group cursor-pointer">
+                        <span class="nav-link">
+                            Filtre
+                        </span>
+
+                        <!-- DROPDOWN -->
+                        <ul
+                            class="absolute left-0 top-full bg-white bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-100 shadow-lg rounded-md w-40 hidden group-hover:block">
+
+                            <!-- SETTING -->
+                            <li class="relative group/ayar">
+                                <div class="px-4 py-2 sub-link flex justify-between cursor-pointer">
+                                    Ayar ▸
+                                </div>
+
+                                <ul
+                                    class="absolute top-0 right-full bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-100 shadow-lg rounded-md w-32 hidden group-hover/ayar:block">
+                                    <li @click="addFilter('14 Ayar')"
+                                        class="px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-yellow-600 dark:hover:text-yellow-400">
+                                        14 Ayar</li>
+                                    <li @click="addFilter('22 Ayar')"
+                                        class="px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-yellow-600 dark:hover:text-yellow-400">
+                                        22 Ayar</li>
+                                </ul>
+                            </li>
+
+
+                            <!-- TYPE -->
+                            <li class="relative group/tur">
+                                <div class="px-4 py-2 sub-link flex justify-between cursor-pointer">
+                                    Filtre ▸
+                                </div>
+
+                                <ul
+                                    class="absolute top-0 right-full bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-100 shadow-lg rounded-md w-32 hidden group-hover/tur:block">
+                                    <li @click="addFilter('Yüzük')"
+                                        class="px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-yellow-600 dark:hover:text-yellow-400">
+                                        Yüzük</li>
+                                    <li @click="addFilter('Bileklik')"
+                                        class="px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-yellow-600 dark:hover:text-yellow-400">
+                                        Bileklik</li>
+                                    <li @click="addFilter('Kolye')"
+                                        class="px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-yellow-600 dark:hover:text-yellow-400">
+                                        Kolye</li>
+                                </ul>
+                            </li>
+
+
+                        </ul>
+                    </li>
+                </ul>
+
+                <button @click="menuOpen = !menuOpen" class="md:hidden text-2xl">
+                    <img src="icons/more.png" alt="Menü" class="w-[30px] h-[30px] invert-0 dark:invert">
+                </button>
+
+                <!-- RIGHT -->
+                <div @click="cartOpen = true" class="relative cursor-pointer">
+                    <img src="icons/cart.png" alt="Sepet" class="w-[30px] h-[30px] invert-0 dark:invert">
+                    <span v-if="cartCount > 0"
+                        class="absolute -top-2 -right-2 bg-red-600 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full">
+                        {{ cartCount }}
+                    </span>
+                </div>
+            </div>
+
+            <!-- HAMBURGER MENU (MOBILE) -->
+            <div v-if="menuOpen"
+                class="md:hidden absolute top-full left-0 w-full bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-100 z-50 border-t">
+
+                <div class="px-6 py-3 border-b">Anasayfa</div>
+                <div class="px-6 py-3 border-b">Ürünler</div>
+
+                <button @click="contactOpen = !contactOpen"
+                    class="w-full px-6 py-3 flex justify-between font-semibold border-b">
+                    İletişim
+                    <span :class="{ 'rotate-180': contactOpen }">⌄</span>
+                </button>
+
+                <div v-if="contactOpen" class="px-6 py-3 space-y-2 bg-gray-50 dark:bg-gray-800">
+
+                    <div @click="scrollTo('contact-info'); menuOpen = false; contactOpen = false"
+                        class="cursor-pointer">
+                        İletişim Bilgilerini Gör
+                    </div>
+
+                    <div @click="scrollTo('contact-form'); menuOpen = false; contactOpen = false"
+                        class="cursor-pointer">
+                        Hızlı Mail At
+                    </div>
+
+                </div>
+
+
+
+                <button @click="filterOpen = !filterOpen" class="w-full px-6 py-3 flex justify-between font-semibold">
+                    Filtreler
+                    <span :class="{ 'rotate-180': filterOpen }">⌄</span>
+                </button>
+
+                <div v-if="filterOpen" class="px-6 py-3 space-y-2 bg-gray-50 dark:bg-gray-800">
+                    <div @click="addFilter('14 Ayar'); menuOpen = false; filterOpen = false">14 Ayar</div>
+                    <div @click="addFilter('22 Ayar'); menuOpen = false; filterOpen = false">22 Ayar</div>
+                    <div @click="addFilter('Yüzük'); menuOpen = false; filterOpen = false">Yüzük</div>
+                    <div @click="addFilter('Bileklik'); menuOpen = false; filterOpen = false">Bileklik</div>
+                    <div @click="addFilter('Kolye'); menuOpen = false; filterOpen = false">Kolye</div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- ACTIVE FILTERS -->
+        <div class="max-w-7xl mx-auto px-6 py-3 flex gap-2 flex-wrap">
+            <div v-for="f in activeFilters" :key="f"
+                class="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full flex items-center gap-2">
+                {{ f }}
+                <button @click="removeFilter(f)">✕</button>
+            </div>
+        </div>
+
+        <!-- PRODUCTS -->
+        <section id="products" class="max-w-7xl mx-auto px-6 py-8">
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+
+                <div v-for="item in filteredItems" :key="item.id"
+                    class="bg-white dark:bg-gray-800 dark:text-gray-100 rounded-xl shadow-md overflow-hidden group">
+                    <!-- IMAGE -->
+                    <div class="overflow-hidden h-64">
+                        <img :src="item.images[activeImage[item.id] || 0]"
+                            class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                            @mouseenter="startSlider(item.id)" @mouseleave="stopSlider(item.id)" />
+                    </div>
+
+                    <!-- INFO -->
+                    <div class="p-4 space-y-2">
+                        <p class="text-sm">{{ item.title }}</p>
+
+                        <p class="font-semibold text-yellow-600">
+                            {{ item.price }} ₺
+                        </p>
+
+                        <button @click="addToCart(item)"
+                            class="w-full bg-yellow-600 text-white py-2 rounded-lg transition transform hover:-translate-y-1">
+                            Sepete Ekle
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ABOUT US -->
+        <section id="about" class="max-w-7xl mx-auto px-6 py-12">
+            <fieldset class="border border-yellow-600 rounded-xl p-6">
+                <legend class="px-3 text-lg font-semibold text-yellow-600">
+                    Zer-iş Gold
+                </legend>
+
+                <div class="flex flex-col md:flex-row items-center gap-6">
+
+                    <!-- LEFT: IMAGE -->
+                    <div class="w-40 h-40 rounded-full overflow-hidden border-4 border-yellow-600 shrink-0">
+                        <img src="./visuals/Gemini_Generated_Image_gofqgsgofqgsgofq.png"
+                            class="w-full h-full object-cover" />
+                    </div>
+
+                    <!-- RIGHT: TEXT -->
+                    <div>
+                        <h3 class="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-2">
+                            Hakkımızda
+                        </h3>
+                        <p class="text-gray-700 dark:text-gray-300 leading-relaxed">
+                            Zer-iş Gold, kaliteli işçilik ve güvenilir hizmet anlayışıyla
+                            mücevher sektöründe müşteri memnuniyetini ön planda tutan
+                            bir markadır.
+                        </p>
+                    </div>
+
+                </div>
+            </fieldset>
+        </section>
+
+        <!-- CONTACT INFO -->
+        <section id="contact-info" class="max-w-7xl mx-auto px-6 py-12">
+            <fieldset class="border border-yellow-600 rounded-xl p-6">
+                <legend class="px-3 text-lg font-semibold text-yellow-600">
+                    İletişim Bilgileri
+                </legend>
+
+                <div class="flex flex-col md:flex-row gap-6">
+
+                    <!-- LEFT: MAP -->
+                    <div class="w-full md:w-1/2 h-64 rounded-lg overflow-hidden">
+                        <iframe
+                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d197.62647189950786!2d36.93170873005992!3d37.57806313150149!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x152ddd0b44e1e441%3A0x5130481ea7b12e98!2s%C4%B0smet%20Pa%C5%9Fa%2C%20Gazeteci%20Ali%20%C3%87elik%20Sk.%20No%3A31%2C%2046100%20Kahramanmara%C5%9F%20Merkez%2FKahramanmara%C5%9F!5e0!3m2!1str!2str!4v1767958172156!5m2!1str!2str"
+                            width="400" height="300" style="border:0;" allowfullscreen="" loading="lazy"
+                            referrerpolicy="no-referrer-when-downgrade">
+                        </iframe>
+                    </div>
+
+                    <!-- RIGHT: INFO -->
+                    <div class="space-y-3 text-gray-700 dark:text-gray-300">
+                        <p>📧 zaferagyar4612@gmail.com </p>
+                        <p>📞 0555 555 55 55</p>
+                        <p>📞 0544 444 44 44</p>
+                        <p>📍 Kahramanmaraş / Türkiye</p>
+                    </div>
+
+                </div>
+            </fieldset>
+        </section>
+
+        <!-- CONTACT FORM -->
+        <section id="contact-form" class="max-w-7xl mx-auto px-6 py-12">
+            <fieldset class="border border-yellow-600 rounded-xl p-6">
+                <legend class="px-3 text-lg font-semibold text-yellow-600">
+                    Öneri ve Şikayetleriniz
+                </legend>
+
+                <div class="flex flex-col md:flex-row gap-6">
+
+                    <!-- LEFT INPUTS -->
+                    <div class="flex flex-col gap-3 md:w-1/2">
+                        <input placeholder="Ad Soyad" type="text" v-model="form.name"
+                            class="p-3 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-100" />
+                        <input placeholder="Telefon" type="tel" v-model="form.phone"
+                            class="p-3 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-100" />
+                        <input placeholder="E-posta" type="email" v-model="form.email"
+                            class="p-3 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-100" />
+                        <input placeholder="Konu" type="text" v-model="form.subject"
+                            class="p-3 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-100" />
+                    </div>
+
+                    <!-- RIGHT TEXTAREA -->
+                    <textarea placeholder="Mesajınız" v-model="form.message"
+                        class="p-3 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-100 md:w-1/2 h-40 resize-none"></textarea>
+                </div>
+
+                <div class="flex gap-4 mt-4">
+                    <button @click="submitForm"
+                        class="flex-1 bg-yellow-600 hover:bg-yellow-700 text-white py-2 rounded-lg">
+                        Gönder
+                    </button>
+
+                    <button @click="resetForm"
+                        class="flex-1 bg-gray-300 dark:bg-gray-600 hover:bg-gray-400 dark:hover:bg-gray-500 text-black dark:text-white py-2 rounded-lg">
+                        Reset
+                    </button>
+                </div>
+
+            </fieldset>
+        </section>
+
+
+
+        <!-- CART MODAL -->
+        <div v-if="cartOpen" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+            <div
+                class="bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 w-full max-w-md rounded-xl p-6 space-y-4 mx-4">
+
+                <div class="flex justify-between items-center">
+                    <h2 class="text-lg font-semibold">Sepet</h2>
+                    <button @click="cartOpen = false">✖</button>
+                </div>
+
+                <div v-if="cart.length === 0" class="text-center text-gray-500">
+                    Sepet boş
+                </div>
+
+                <div v-for="item in cart" :key="item.id" class="flex justify-between items-center border-b pb-2">
+
+                    <div>
+                        <p class="font-medium">{{ item.title }}</p>
+                        <p class="text-sm">
+                            {{ item.quantity }} x {{ item.price }} ₺ =
+                            <span class="font-semibold">
+                                {{ item.quantity * item.price }} ₺
+                            </span>
+                        </p>
+                    </div>
+
+                    <div class="flex items-center gap-2">
+                        <button @click="decreaseQty(item)">−</button>
+                        <span>{{ item.quantity }}</span>
+                        <button @click="increaseQty(item)">+</button>
+                        <button @click="removeFromCart(item.id)" class="text-red-500">🗑</button>
+                    </div>
+                </div>
+
+                <div class="flex justify-between font-semibold pt-2">
+                    <span>Toplam</span>
+                    <span>{{ cartTotal }} ₺</span>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+    <!-- DATA -->
+    <script src="data.js"></script>
+
+    <!-- APP -->
+    <script src="app.js"></script>
+
+</body>
+
+</html>

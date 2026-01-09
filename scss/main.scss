@@ -1,0 +1,42 @@
+/* VARIABLES */
+$gold: #ca8a04;
+$transition: 0.25s ease;
+
+/* NAVBAR LINKS */
+.nav-link {
+  transition: all $transition;
+
+  &:hover {
+    color: $gold;
+    transform: scale(1.1);
+  }
+}
+
+/* FILTER DROPDOWN */
+.filter-item {
+  transition: background $transition;
+
+  &:hover {
+    background: #f3f4f6;
+  }
+}
+
+/* PRODUCT CARD */
+.product-card {
+  .product-image {
+    transition: transform 0.3s ease;
+
+    &:hover {
+      transform: scale(1.05);
+    }
+  }
+
+  .add-to-cart {
+    transition: transform 0.2s ease;
+
+    &:hover {
+      transform: translateY(-6px);
+    }
+  }
+}
+

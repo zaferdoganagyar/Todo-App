@@ -1,0 +1,59 @@
+/* VARIABLES */
+/* NAVBAR LINKS */
+.nav-link {
+  transition: all 0.25s ease;
+}
+
+.nav-link:hover {
+  color: #ca8a04;
+  transform: scale(1.1);
+}
+
+/* FILTER DROPDOWN */
+.filter-item {
+  transition: background 0.25s ease;
+}
+
+.filter-item:hover {
+  background: #f3f4f6;
+}
+
+/* PRODUCT CARD */
+.product-card .product-image {
+  transition: transform 0.3s ease;
+}
+
+.product-card .product-image:hover {
+  transform: scale(1.05);
+}
+
+.product-card .add-to-cart {
+  transition: transform 0.2s ease;
+}
+
+.product-card .add-to-cart:hover {
+  transform: translateY(-6px);
+}
+
+.sub-link {
+  transition: all 0.25s ease;
+}
+
+.sub-link:hover {
+  background-color: #f3f4f6;
+  color: #ca8a04;
+}
+
+.dark .sub-link:hover {
+  background-color: #374151;
+  color: #facc15;
+}
+
+
+.nav-link {
+  display: inline-block;
+}
+
+
+
+/*# sourceMappingURL=main.css.map */
